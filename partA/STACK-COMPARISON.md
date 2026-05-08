@@ -73,4 +73,4 @@
 
 ---
 
-*Co-Authored-By: Claude <noreply@anthropic.com>*
+*Co-Authored-By: Claude <noreply@anthropic.com>*mv STACK-COMPARISON.md partA/STACK-COMPARISON.md
