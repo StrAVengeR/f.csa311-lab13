@@ -1,0 +1,164 @@
+openapi: 3.0.0
+info:
+  title: Personal Task Tracker API
+  version: 1.0.0
+  description: Task CRUD, filter, priority sort — F.CSM311 Бие даалт 13
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+paths:
+  /api/tasks:
+    get:
+      summary: Get all tasks
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, in-progress, done]
+        - in: query
+          name: priority
+          schema:
+            type: string
+            enum: [high, medium, low]
+        - in: query
+          name: label
+          schema:
+            type: string
+        - in: query
+          name: search
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+    post:
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '201':
+          description: Created task
+        '400':
+          description: Validation error
+
+  /api/tasks/overdue:
+    get:
+      summary: Get overdue tasks
+      responses:
+        '200':
+          description: List of overdue tasks
+
+  /api/tasks/by-priority:
+    get:
+      summary: Get tasks sorted by priority
+      responses:
+        '200':
+          description: Tasks sorted high → medium → low
+
+  /api/tasks/{id}:
+    get:
+      summary: Get task by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task found
+        '404':
+          description: Task not found
+    put:
+      summary: Update task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '200':
+          description: Updated task
+        '404':
+          description: Task not found
+    delete:
+      summary: Delete task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Deleted
+        '404':
+          description: Task not found
+
+components:
+  schemas:
+    TaskInput:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: Buy groceries
+        description:
+          type: string
+        status:
+          type: string
+          enum: [pending, in-progress, done]
+          default: pending
+        priority:
+          type: string
+          enum: [high, medium, low]
+          default: medium
+        due_date:
+          type: string
+          format: date
+          example: '2025-12-31'
+        label:
+          type: string
+
+    Task:
+      allOf:
+        - $ref: '#/components/schemas/TaskInput'
+        - type: object
+          properties:
+            id:
+              type: integer
+            created_at:
+              type: string
+            updated_at:
+              type: string
+
+    TaskListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        count:
+          type: integer
