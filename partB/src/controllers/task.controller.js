@@ -68,3 +68,27 @@ const deleteTask = (req, res) => {
 };
 
 module.exports = { getAllTasks, getTaskById, createTask, updateTask, deleteTask };
+
+const getOverdueTasks = (req, res) => {
+  try {
+    const tasks = taskModel.getOverdueTasks();
+    res.json({ success: true, data: tasks, count: tasks.length });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+const getTasksSortedByPriority = (req, res) => {
+  try {
+    const tasks = taskModel.getTasksSortedByPriority();
+    res.json({ success: true, data: tasks, count: tasks.length });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+module.exports = {
+  getAllTasks, getTaskById, createTask,
+  updateTask, deleteTask,
+  getOverdueTasks, getTasksSortedByPriority
+};

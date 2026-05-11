@@ -39,3 +39,32 @@ const deleteTask = (id) => {
 };
 
 module.exports = { getAllTasks, getTaskById, createTask, updateTask, deleteTask };
+
+// Get overdue tasks (due_date < today)
+const getOverdueTasks = () => {
+  return db.prepare(`
+    SELECT * FROM tasks
+    WHERE due_date < date('now')
+    AND status != 'done'
+    ORDER BY due_date ASC
+  `).all();
+};
+
+// Get tasks sorted by priority
+const getTasksSortedByPriority = () => {
+  return db.prepare(`
+    SELECT * FROM tasks
+    ORDER BY CASE priority
+      WHEN 'high'   THEN 1
+      WHEN 'medium' THEN 2
+      WHEN 'low'    THEN 3
+      ELSE 4
+    END
+  `).all();
+};
+
+module.exports = {
+  getAllTasks, getTaskById, createTask,
+  updateTask, deleteTask,
+  getOverdueTasks, getTasksSortedByPriority
+};
