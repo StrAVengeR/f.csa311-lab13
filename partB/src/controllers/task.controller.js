@@ -3,10 +3,10 @@ const taskModel = require('../models/task.model');
 const getAllTasks = (req, res) => {
   try {
     const filters = {
-      status: req.query.status,
+      status:   req.query.status,
       priority: req.query.priority,
-      label: req.query.label,
-      search: req.query.search,
+      label:    req.query.label,
+      search:   req.query.search,
     };
     const tasks = taskModel.getAllTasks(filters);
     res.json({ success: true, data: tasks, count: tasks.length });
@@ -28,16 +28,13 @@ const getTaskById = (req, res) => {
 const createTask = (req, res) => {
   try {
     const { title, description, status, priority, due_date, label } = req.body;
-    if (!title || title.trim() === '') {
-      return res.status(400).json({ success: false, error: 'Title is required' });
-    }
     const task = taskModel.createTask({
-      title: title.trim(),
+      title:       title.trim(),
       description: description || null,
-      status: status || 'pending',
-      priority: priority || 'medium',
-      due_date: due_date || null,
-      label: label || null,
+      status:      status      || 'pending',
+      priority:    priority    || 'medium',
+      due_date:    due_date    || null,
+      label:       label       || null,
     });
     res.status(201).json({ success: true, data: task });
   } catch (err) {
@@ -66,8 +63,6 @@ const deleteTask = (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
-
-module.exports = { getAllTasks, getTaskById, createTask, updateTask, deleteTask };
 
 const getOverdueTasks = (req, res) => {
   try {
